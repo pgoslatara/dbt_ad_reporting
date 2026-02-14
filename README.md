@@ -666,7 +666,7 @@ Fivetran offers the ability for you to orchestrate your dbt project through [Fiv
 <br>
 
 ### (Optional) Use predefined Metrics and the dbt Semantic Layer
-<details><summary>Expand for details</summary>
+<details open><summary>Expand for details</summary>
 
 On top of the `ad_reporting__ad_report` final model, the Ad Reporting dbt package defines common [Metrics](https://docs.getdbt.com/docs/build/build-metrics-intro) using [MetricFlow](https://docs.getdbt.com/docs/build/about-metricflow) that can be queried with the [dbt Semantic Layer](https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl). These metrics include:
 - Spend
@@ -696,7 +696,6 @@ Additionally, the `fivetran_get_base_dates` macro is used in the generation of t
 >**Note**: This `dbt_date:time_zone` variable is defined under the `ad_reporting` hierarchy within this package and should not adjust any local global variable values in your project if you already have this variable defined. 
 
 You may specify any [valid timezone string](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) in place of America/Los_Angeles. For example, use America/New_York for East Coast Time.
-
 ```yml
 ## root dbt_project.yml
 vars:
@@ -707,6 +706,25 @@ vars:
 You may notice a new run artifact called `semantic_manifest.json`. This file serves as the integation point between dbt-core and metricflow, and contains all the information MetricFlow needs to build a semantic graph, and generate SQL from query requests. You can learn more about the semantic manifest file [in the docs](https://docs.getdbt.com/docs/dbt-cloud-apis/sl-manifest).
 
 > **Note**: Metricflow is only supported in dbt>=v1.6.0, therefore, please take note of the correct dbt version.
+
+#### Disable Semantic Models
+If you would like to disable semantic models, disable the package’s semantic layer resources in the relevant YAML file.
+
+```yml
+# Disable the package's time spine model
+vars:
+  ad_reporting__metricflow_time_spine_enabled: false
+
+# Disable all semantic layer resources from the package
+semantic-models:
+  ad_reporting:
+    +enabled: false
+
+metrics:
+  ad_reporting:
+    +enabled: false
+```
+See [dbt documentation](https://docs.getdbt.com/reference/resource-configs/enabled?version=2.0#disable-semantic-layer-resources-from-a-package) for more details.
 
 </details>
 <br>
